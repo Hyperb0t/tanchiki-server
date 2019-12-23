@@ -69,21 +69,26 @@ public class ClientHandler implements Runnable {
 
     private void moveTankInModel(GameState gameState, Protocol packet) {
         Tank ta = null;
+        CollisionManager collisionManager = new CollisionManager();
         for (AbstractEntity en : gameState.getField().getEntities()) {
             if (en instanceof Tank && en.getX().equals(packet.getFromContent(0).getX())
                     && en.getY().equals(packet.getFromContent(0).getY())) {
                 ta = (Tank) en;
-                en.setX(packet.getFromContent(0).getNewX());
-                en.setY(packet.getFromContent(0).getNewY());
-                ta.setDirection(packet.getFromContent(0).getDirection());
+//                if(collisionManager.canMove(gameState, ta, packet.getFromContent(0).getDirection(), server.getGameRules().getTankSpeed())) {
+                    en.setX(packet.getFromContent(0).getNewX());
+                    en.setY(packet.getFromContent(0).getNewY());
+                    ta.setDirection(packet.getFromContent(0).getDirection());
+//                }
             }
         }
-        gameState.getField().getFloorCells()
-                [Math.round(packet.getFromContent(0).getX())][Math.round(packet.getFromContent(0).getY())]
-                .setEntity(null);
-        gameState.getField().getFloorCells()
-                [Math.round(packet.getFromContent(0).getNewX())][Math.round(packet.getFromContent(0).getNewY())]
-                .setEntity(ta);
+//        if(collisionManager.canMove(gameState, ta, packet.getFromContent(0).getDirection(), server.getGameRules().getTankSpeed())) {
+            gameState.getField().getFloorCells()
+                    [Math.round(packet.getFromContent(0).getX())][Math.round(packet.getFromContent(0).getY())]
+                    .setEntity(null);
+            gameState.getField().getFloorCells()
+                    [Math.round(packet.getFromContent(0).getNewX())][Math.round(packet.getFromContent(0).getNewY())]
+                    .setEntity(ta);
+//        }
     }
 
     private void sendEveryoneExceptThis(String toSend) {
